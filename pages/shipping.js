@@ -1,4 +1,4 @@
-import { Button, List, ListItem, TextField, Typography } from '@mui/material';
+import { Button, List, ListItem, TextField, Typography,CircularProgress } from '@mui/material';
 import React, { useContext, useEffect,useState } from 'react';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Form from '../components/Form';
@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { Store } from '../utils/Store';
 import jsCookie from 'js-cookie';
 import { signIn, signOut, useSession, getSession } from 'next-auth/react';
+import Cookies from 'js-cookie';
 
 
 export default function ShippingScreen() {
@@ -23,18 +24,23 @@ export default function ShippingScreen() {
     userInfo,
     cart: { shippingAddress },
   } = state;
+  const [loading, setLoading] = useState(true);
 
 
-  const [ checkLogin, setCheckLogin ] = useState('')
+
 
   useEffect(() => {
 
-    if (status !== 'authenticated') {
+    if (status !== 'authenticated' || !session ||!userInfo) {
    
       router.replace('/login')
    
     }
+    // if (!userInfo) {
+    //   router.reload()
+    // }
     
+    setLoading(false)
     setValue('fullName', shippingAddress.fullName);
     setValue('address', shippingAddress.address);
     setValue('city', shippingAddress.city);
@@ -55,11 +61,17 @@ export default function ShippingScreen() {
         city,
         postalCode,
         country,
+        
       })
     );
     router.push('/payment');
   };
   return (
+    <> {loading ?  (
+      <ListItem>
+        <CircularProgress />
+      </ListItem>
+    ):
     <>
       <CheckoutWizard activeStep={1}></CheckoutWizard>
       <Form onSubmit={handleSubmit(submitHandler)}>
@@ -219,6 +231,8 @@ export default function ShippingScreen() {
           </ListItem>
         </List>
       </Form>
+      </>
+}
 </>
   );
 }

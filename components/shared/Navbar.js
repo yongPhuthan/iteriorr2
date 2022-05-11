@@ -109,7 +109,7 @@ export default function Navbar() {
         <Box
         
         >
-          <AppBar position="static" color="primary" sx={ {paddingLeft: '80px'}}>
+          <AppBar position="static" color="primary" sx={ {paddingLeft: '80px' ,position: 'fixed'}}>
             <Toolbar>
               <Grid>
                 <Box sx={{  xs: 'none', md: 'flex' }}>
@@ -157,6 +157,7 @@ export default function Navbar() {
                 sx={{
                   flexGrow: 1,
                   display: { xs: 'none', md: 'flex', lg: 'flex' },
+                  justifyContent:'center'
                 }}
               >
                 {pages.map((page) => (

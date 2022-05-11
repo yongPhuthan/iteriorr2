@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  Component,
+} from 'react';
 import { useForm, Controller, set } from 'react-hook-form';
 import NextLink from 'next/link';
 import Form from '../components/Form';
@@ -17,6 +23,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import Cookies from 'js-cookie';
 
 export default function LoginScreen() {
   const { state, dispatch } = useContext(Store);
@@ -57,11 +64,8 @@ export default function LoginScreen() {
 
         dispatch({ type: 'USER_LOGIN', payload: data });
         jsCookie.set('userInfo', JSON.stringify(data));
-        setIsLoading(true)
-        router.replace('/shipping')
-        // {loading ? (
-        //   console.log('already loaded'),
-        // : null}
+        setIsLoading(true);
+        checkUserInfo();
       } catch (err) {
         enqueueSnackbar(getError(err), { variant: 'error' });
       }
@@ -69,19 +73,27 @@ export default function LoginScreen() {
       return null;
     }
   };
+  const checkUserInfo = () => {
+    if (userInfo) {
+      router.push({
+        pathname: '/shipping',
+      });
+    }
+    if (!userInfo) {
+      router.reload();
+    }
+  };
 
   useEffect(() => {
-    
     if (status === 'authenticated')
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         setLoginUser(session.user.name);
         setNameAuth(session.user.name);
         setEmailAuth(session.user.email);
         submitHandler({ name: nameAuth, email: emailAuth });
       } catch {
         setIsLoading(false);
-        
       }
   }, [emailAuth, nameAuth, loginUser, status, router]);
 
